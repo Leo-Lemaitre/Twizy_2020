@@ -198,7 +198,7 @@ public class Hello {
 	}
 
 	public static Mat LectureImage(String fichier) {
-		return Highgui.imread(new File(fichier).getAbsolutePath());
+		return Highgui.imread(new File(fichier).getPath());
 	}
 
 	public static void ImShow(String title, Mat img) {
