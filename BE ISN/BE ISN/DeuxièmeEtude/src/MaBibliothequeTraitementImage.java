@@ -81,11 +81,28 @@ public class MaBibliothequeTraitementImage {
 
 	//Methode qui permet de saturer les couleurs rouges à partir de 3 seuils
 	public static Mat seuillage(Mat input, int seuilRougeOrange, int seuilRougeViolet,int seuilSaturation){
-		//à completer
-		//...
+		Vector<Mat> channels = splitHSVChannels(input);
+		//création d'un seuil 
+		Scalar rougeviolet = new Scalar(seuilRougeViolet);
+		Scalar rougeorange = new Scalar(seuilRougeOrange);
+		Scalar seuilsaturation = new Scalar(seuilSaturation);
+		
+		//Création d'une matrice
+		Mat rouges=new Mat();
+		Mat rougeOrange=new Mat();
+		Mat rougeViolet=new Mat();
+		Mat Saturation=new Mat();
+		//Comparaison et saturation des pixels dont la composante rouge est plus grande que le seuil rougeViolet
+		Core.compare(channels.get(0), rougeviolet, rougeViolet, Core.CMP_GT);
+		Core.compare(channels.get(0), rougeorange, rougeOrange, Core.CMP_GT);
+		Core.bitwise_not(rougeOrange, rougeOrange);
+		Core.compare(channels.get(1), seuilsaturation, Saturation, Core.CMP_GT);
+		
+		Core.bitwise_or(rougeOrange, rougeViolet, rouges);
+		Core.bitwise_and(rouges, Saturation, rouges);
 
 		//image saturée à retourner
-		return new Mat();
+		return rouges;
 
 
 
@@ -104,8 +121,6 @@ public class MaBibliothequeTraitementImage {
 		Core.compare(channels.get(0), rougeviolet, rouges, Core.CMP_GT);
 		//image saturée à retourner
 		return rouges;
-
-
 
 	}
 
