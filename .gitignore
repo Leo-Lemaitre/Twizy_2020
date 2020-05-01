@@ -12,5 +12,4 @@
 *.class
 .settings/
 .classpath
-.project
 .metadata/
