@@ -1,3 +1,5 @@
+package src;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,9 +17,13 @@ public class Principale {
 		//la methode seuillage est ici extraite de l'archivage jar du meme nom 
 		Mat saturee=MaBibliothequeTraitementImage.seuillage(transformee, 6, 170, 110);
 		Mat objetrond = null;
+		
 
 		//Création d'une liste des contours à partir de l'image saturée
 		List<MatOfPoint> ListeContours= MaBibliothequeTraitementImageEtendue .ExtractContours(saturee);
+		
+		
+		
 		int i=0;
 		double [] scores=new double [6];
 		//Pour tous les contours de la liste
@@ -27,6 +33,15 @@ public class Principale {
 
 			if (objetrond!=null){
 				MaBibliothequeTraitementImage.afficheImage("Objet rond detécté", objetrond);
+				//*************
+				Mat transformeerond=MaBibliothequeTraitementImageEtendue.transformeBGRversHSV(objetrond);
+				//
+				Mat satureerond=MaBibliothequeTraitementImage.seuillage(transformeerond, 115, 239, 110);
+				MaBibliothequeTraitementImage.afficheImage("Objet rond detéctésaturee", satureerond);
+		    	List<MatOfPoint> ListeContoursrond= MaBibliothequeTraitementImageEtendue .ExtractContours(satureerond);
+			//	List<Point> objetronddescriptor= MaBibliothequeTraitementImageEtendue.ExtractDesciptor(satureerond2);
+		    	//*************
+		    	
 				scores[0]=MaBibliothequeTraitementImageEtendue.Similitude(objetrond,"ref30.jpg");
 				scores[1]=MaBibliothequeTraitementImageEtendue.Similitude(objetrond,"ref50.jpg");
 				scores[2]=MaBibliothequeTraitementImageEtendue.Similitude(objetrond,"ref70.jpg");
@@ -53,7 +68,7 @@ public class Principale {
 
 			}
 		}	
-
+		MaBibliothequeTraitementImageEtendue.ExtractKeypoint();
 
 	}
 }

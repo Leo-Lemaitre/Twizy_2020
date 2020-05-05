@@ -1,3 +1,5 @@
+package src;
+
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -96,10 +98,23 @@ public class MaBibliothequeTraitementImageEtendue {
 			Scalar color = new Scalar(rand.nextInt(255 - 0 + 1), rand.nextInt(255 - 0 + 1), rand.nextInt(255 - 0 + 1));
 			Imgproc.drawContours(drawing, contours, i, color, 1, 8, hierarchy, 0, new Point());
 		}
-		// afficheImage("Contours",drawing);
+		 afficheImage("Contours",drawing);
 
 		return contours;
 	}
+	
+	//ignorez cette fonction
+	/*	public static List<Point> ExtractDesciptor(Mat mat){
+			List<MatOfPoint> ListeContoursPointsInterets= MaBibliothequeTraitementImageEtendue.ExtractContours(mat);
+			List<Point> lista = new ArrayList<>();
+			List<Point> listaEncours=new ArrayList<>();
+			for(int k=0;k<ListeContoursPointsInterets.size();k++) {
+				listaEncours.addAll(ListeContoursPointsInterets.get(k).toList());
+				System.out.println(listaEncours);
+		}
+			return listaEncours;
+		}
+			*/
 
 	// Methode qui permet de decouper et identifier les contours carrés,
 	// triangulaires ou rectangulaires.
@@ -287,4 +302,64 @@ public class MaBibliothequeTraitementImageEtendue {
 		
 	}
 */
+	
+	public static void ExtractKeypoint() {
+		Mat sroadSign = Highgui.imread("p10.jpg");
+		Mat sObject = new Mat();
+		Imgproc.resize(sroadSign, sObject, sroadSign.size());
+		Mat grayObject = new Mat(sObject.rows(), sObject.cols(), sObject.type());
+		Imgproc.cvtColor(sObject, grayObject, Imgproc.COLOR_BGRA2GRAY);
+		Core.normalize(grayObject, grayObject, 0, 255, Core.NORM_MINMAX);
+		Mat graySign = new Mat(sroadSign.rows(), sroadSign.cols(), sroadSign.type());
+		Imgproc.cvtColor(sroadSign, graySign, Imgproc.COLOR_BGRA2GRAY);
+		Core.normalize(graySign, graySign, 0, 255, Core.NORM_MINMAX);
+		FeatureDetector orbDetector=FeatureDetector.create(FeatureDetector.ORB);
+		DescriptorExtractor orbExtractor=DescriptorExtractor.create(DescriptorExtractor.ORB);
+		
+		
+		MatOfKeyPoint objectKeypoints=new MatOfKeyPoint();
+		orbDetector.detect(grayObject, objectKeypoints);
+		
+		//System.out.println(objectKeypoints.toList());
+		
+		MatOfKeyPoint signKeypoints=new MatOfKeyPoint();
+		orbDetector.detect(graySign, signKeypoints);
+		
+		
+		System.out.println("*****Matrix of keypoints*************");
+		System.out.println(signKeypoints.toList());
+		
+		
+		Mat objectDescriptor =new Mat(sObject.rows() , sObject.cols() , sObject.type());
+		orbExtractor.compute(grayObject, objectKeypoints, objectDescriptor);
+		
+	
+		Mat signDescriptor =new Mat(sroadSign.rows() , sroadSign.cols() , sroadSign.type());
+		orbExtractor.compute(graySign, signKeypoints, signDescriptor);
+		
+		
+		//Matrice des descripteurs
+		System.out.println("************Matrice des descripteurs******************");
+		System.out.println(signDescriptor.dump());
+	
+	//	System.out.println(signKeypoints.size());
+	//	System.out.println(signDescriptor.size());
+		
+
+	
+	
+	/*
+	
+	//Le matching
+	MatOfDMatch matchs = new MatOfDMatch();
+	DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE);
+	matcher.match(objectDescriptor, signDescriptor,matchs);
+	System.out.println(matchs.dump());
+	Mat matchedImage=new Mat(sroadSign.rows(),sroadSign.cols()*2,sroadSign.type());
+	Features2d.drawMatches(sObject, objectKeypoints, sroadSign, signKeypoints, matchs, matchedImage);
+	
+			
+*/
+	}
+		
 }
