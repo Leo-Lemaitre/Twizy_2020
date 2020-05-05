@@ -39,7 +39,7 @@ import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
 public class MaBibliothequeTraitementImageEtendue {
-	// Contient toutes les méthodes necessaires à la transformation des images
+	// Contient toutes les mÃ©thodes necessaires Ã  la transformation des images
 
 	// Methode qui permet de transformer une matrice intialement au format BGR
 	// au format HSV
@@ -81,7 +81,7 @@ public class MaBibliothequeTraitementImageEtendue {
 
 	// Methode qui permet d'extraire les contours d'une image donnee
 	public static List<MatOfPoint> ExtractContours(Mat input) {
-		// Detecter les contours des formes trouvées
+		// Detecter les contours des formes trouvÃ©es
 		int thresh = 100;
 		Mat canny_output = new Mat();
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
@@ -115,11 +115,11 @@ public class MaBibliothequeTraitementImageEtendue {
 		}
 			*/
 
-	// Methode qui permet de decouper et identifier les contours carrés,
+	// Methode qui permet de decouper et identifier les contours carrÃ©s,
 	// triangulaires ou rectangulaires.
-	// Renvoie null si aucun contour rond n'a été trouvé.
-	// Renvoie une matrice carrée englobant un contour rond si un contour rond a
-	// été trouvé
+	// Renvoie null si aucun contour rond n'a Ã©tÃ© trouvÃ©.
+	// Renvoie une matrice carrÃ©e englobant un contour rond si un contour rond a
+	// Ã©tÃ© trouvÃ©
 	public static Mat DetectForm(Mat img, MatOfPoint contour) {
 		MatOfPoint2f matOfPoint2f = new MatOfPoint2f();
 		MatOfPoint2f approxCurve = new MatOfPoint2f();
@@ -132,8 +132,8 @@ public class MaBibliothequeTraitementImageEtendue {
 		// Cherche le plus petit cercle entourant le contour
 		Imgproc.minEnclosingCircle(matOfPoint2f, center, radius);
 		// System.out.println(contourArea+" "+Math.PI*radius[0]*radius[0]);
-		// on dit que c'est un cercle si l'aire occupé par le contour est à
-		// supérieure à 80% de l'aire occupée par un cercle parfait
+		// on dit que c'est un cercle si l'aire occupÃ© par le contour est Ã 
+		// supÃ©rieure Ã  80% de l'aire occupÃ©e par un cercle parfait
 		if ((contourArea / (Math.PI * radius[0] * radius[0])) >= 0.8) {
 			// System.out.println("Cercle");
 			Core.circle(img, center, (int) radius[0], new Scalar(255, 0, 0), 2);
@@ -202,7 +202,7 @@ public class MaBibliothequeTraitementImageEtendue {
 		return Math.floor(alpha * 180. / Math.PI + 0.5);
 	}
 
-	// methode à completer
+	// methode Ã  completer
 	public static double Similitude(Mat object, String signfile) {
 
 		// Conversion du signe de reference en niveaux de gris et normalisation
@@ -213,7 +213,7 @@ public class MaBibliothequeTraitementImageEtendue {
 		Mat signeNoirEtBlanc = new Mat();
 
 		// Conversion du panneau extrait de l'image en gris et normalisation et
-		// redimensionnement à la taille du panneau de réference
+		// redimensionnement Ã  la taille du panneau de rÃ©ference
 		Mat grayObject = new Mat(panneauref.rows(), panneauref.cols(), panneauref.type());
 		Imgproc.resize(object, object, graySign.size());
 		//afficheImage("Panneau extrait de l'image", object);
@@ -238,18 +238,30 @@ public class MaBibliothequeTraitementImageEtendue {
 		Mat signDescriptor = new Mat(panneauref.rows(), panneauref.cols(), panneauref.type());
 		orbExtractor.compute(graySign, signKeypoints, signDescriptor);
 
-		MatOfDMatch matchs = new MatOfDMatch();
-
+		List<MatOfDMatch>matchs = new ArrayList<MatOfDMatch>();
+		int k = 3;
 		DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE);
-		matcher.match(objectDescriptor, signDescriptor, matchs);
+		//	matcher.match(objectDescriptor, signDescriptor, matchs);
+		matcher.knnMatch(objectDescriptor, signDescriptor, matchs, k);
 
-		System.out.println(matchs.dump());
+		float ratioThresh = 0.7f;
+		List<DMatch> listOfGoodMatches = new ArrayList<>();
+		for (int i = 0; i < matchs.size(); i++) {
+			if (matchs.get(i).rows() > 1) {
+				DMatch[] matches = matchs.get(i).toArray();
+				if (matches[0].distance < ratioThresh * matches[1].distance) {
+					listOfGoodMatches.add(matches[0]);
+				}
+			}
+		}
+		MatOfDMatch goodMatches = new MatOfDMatch();
+        goodMatches.fromList(listOfGoodMatches);
+        System.out.println(goodMatches.dump());
+        
+        Mat matchedImage = new Mat(panneauref.rows(), panneauref.cols() * 2, panneauref.type());
+		Features2d.drawMatches(object, objectKeypoints, panneauref, signKeypoints, goodMatches, matchedImage);
 
-		Mat matchedImage = new Mat(panneauref.rows(), panneauref.cols() * 2, panneauref.type());
-		Features2d.drawMatches(object, objectKeypoints, panneauref, signKeypoints, matchs, matchedImage);
-
-		// return match calculer la distance 
-		return  -1;
+		return goodMatches.size().height;	
 		
 
 	}
