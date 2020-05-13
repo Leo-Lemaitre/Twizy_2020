@@ -391,6 +391,7 @@ public class MaBibliothequeTraitementImageEtendue {
 			keyPointDB = new KeyPoints(x, y, size, angle, response, octave);
 			keyPointDB.save();
 			rDB = new Relation(pDB.getId(), keyPointDB.getIdKeyPoint());
+			rDB.save();
 		}
 
 	}
