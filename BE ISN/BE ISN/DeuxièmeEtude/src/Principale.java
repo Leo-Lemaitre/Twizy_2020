@@ -10,7 +10,7 @@ public class Principale {
 	{
 		//Ouverture le l'image et saturation des rouges
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		Mat m=Highgui.imread("p10.jpg",Highgui.CV_LOAD_IMAGE_COLOR);
+		Mat m=Highgui.imread("p8.jpg",Highgui.CV_LOAD_IMAGE_COLOR);
 		MaBibliothequeTraitementImageEtendue.afficheImage("Image testée", m);
 		Mat transformee=MaBibliothequeTraitementImageEtendue.transformeBGRversHSV(m);
 		//la methode seuillage est ici extraite de l'archivage jar du meme nom 
@@ -37,7 +37,8 @@ public class Principale {
 				//
 				Mat satureerond=MaBibliothequeTraitementImage.seuillage(transformeerond, 115, 239, 110);
 				MaBibliothequeTraitementImage.afficheImage("Objet rond detéctésaturee", satureerond);
-		    	List<MatOfPoint> ListeContoursrond= MaBibliothequeTraitementImageEtendue .ExtractContours(satureerond);
+				MaBibliothequeTraitementImageEtendue.ExtractKeypoint();
+		    //	List<MatOfPoint> ListeContoursrond= MaBibliothequeTraitementImageEtendue .ExtractContours(satureerond);
 			//	List<Point> objetronddescriptor= MaBibliothequeTraitementImageEtendue.ExtractDesciptor(satureerond2);
 		    	//*************
 		    	
@@ -67,7 +68,7 @@ public class Principale {
 
 			}
 		}	
-		MaBibliothequeTraitementImageEtendue.ExtractKeypoint();
+		//MaBibliothequeTraitementImageEtendue.ExtractKeypoint();
 
 	}
 }

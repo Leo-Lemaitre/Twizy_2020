@@ -1,12 +1,10 @@
 
-import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.Vector;
@@ -15,7 +13,6 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -29,14 +26,18 @@ import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.features2d.DMatch;
 import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.DescriptorMatcher;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.features2d.Features2d;
+import org.opencv.features2d.KeyPoint;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
+
+import activeRecord.KeyPoints;
+import activeRecord.PanneauxRef;
+import activeRecord.Relation;
 
 public class MaBibliothequeTraitementImageEtendue {
 	// Contient toutes les méthodes necessaires à la transformation des images
@@ -97,28 +98,27 @@ public class MaBibliothequeTraitementImageEtendue {
 			Scalar color = new Scalar(rand.nextInt(255 - 0 + 1), rand.nextInt(255 - 0 + 1), rand.nextInt(255 - 0 + 1));
 			Imgproc.drawContours(drawing, contours, i, color, 1, 8, hierarchy, 0, new Point());
 		}
-		 afficheImage("Contours",drawing);
+		afficheImage("Contours", drawing);
 
 		return contours;
 	}
-	
-	//ignorez cette fonction
-	/*	public static List<Point> ExtractDesciptor(Mat mat){
-			List<MatOfPoint> ListeContoursPointsInterets= MaBibliothequeTraitementImageEtendue.ExtractContours(mat);
-			List<Point> lista = new ArrayList<>();
-			List<Point> listaEncours=new ArrayList<>();
-			for(int k=0;k<ListeContoursPointsInterets.size();k++) {
-				listaEncours.addAll(ListeContoursPointsInterets.get(k).toList());
-				System.out.println(listaEncours);
-		}
-			return listaEncours;
-		}
-			*/
+
+	// ignorez cette fonction
+	/*
+	 * public static List<Point> ExtractDesciptor(Mat mat){ List<MatOfPoint>
+	 * ListeContoursPointsInterets=
+	 * MaBibliothequeTraitementImageEtendue.ExtractContours(mat); List<Point>
+	 * lista = new ArrayList<>(); List<Point> listaEncours=new ArrayList<>();
+	 * for(int k=0;k<ListeContoursPointsInterets.size();k++) {
+	 * listaEncours.addAll(ListeContoursPointsInterets.get(k).toList());
+	 * System.out.println(listaEncours); } return listaEncours; }
+	 */
 
 	// Methode qui permet de decouper et identifier les contours carrés,
 	// triangulaires ou rectangulaires.
 	// Renvoie null si aucun contour rond n'a été trouvé.
-	// Renvoie une matrice carrée englobant un contour rond si un contour rond a
+	// Renvoie une matrice carrée englobant un contour rond si un contour rond
+	// a
 	// été trouvé
 	public static Mat DetectForm(Mat img, MatOfPoint contour) {
 		MatOfPoint2f matOfPoint2f = new MatOfPoint2f();
@@ -216,13 +216,13 @@ public class MaBibliothequeTraitementImageEtendue {
 		// redimensionnement à la taille du panneau de réference
 		Mat grayObject = new Mat(panneauref.rows(), panneauref.cols(), panneauref.type());
 		Imgproc.resize(object, object, graySign.size());
-		//afficheImage("Panneau extrait de l'image", object);
+		// afficheImage("Panneau extrait de l'image", object);
 		Imgproc.cvtColor(object, grayObject, Imgproc.COLOR_BGRA2GRAY);
 		Core.normalize(grayObject, grayObject, 0, 255, Core.NORM_MINMAX);
 		Imgproc.resize(grayObject, grayObject, graySign.size());
 
 		Core.normalize(graySign, graySign, 0, 255, Core.NORM_MINMAX);
-		
+
 		FeatureDetector orbDetector = FeatureDetector.create(FeatureDetector.ORB);
 		DescriptorExtractor orbExtractor = DescriptorExtractor.create(DescriptorExtractor.ORB);
 
@@ -238,10 +238,10 @@ public class MaBibliothequeTraitementImageEtendue {
 		Mat signDescriptor = new Mat(panneauref.rows(), panneauref.cols(), panneauref.type());
 		orbExtractor.compute(graySign, signKeypoints, signDescriptor);
 
-		List<MatOfDMatch>matchs = new ArrayList<MatOfDMatch>();
+		List<MatOfDMatch> matchs = new ArrayList<MatOfDMatch>();
 		int k = 3;
 		DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE);
-		//	matcher.match(objectDescriptor, signDescriptor, matchs);
+		// matcher.match(objectDescriptor, signDescriptor, matchs);
 		matcher.knnMatch(objectDescriptor, signDescriptor, matchs, k);
 
 		float ratioThresh = 0.7f;
@@ -255,65 +255,66 @@ public class MaBibliothequeTraitementImageEtendue {
 			}
 		}
 		MatOfDMatch goodMatches = new MatOfDMatch();
-        goodMatches.fromList(listOfGoodMatches);
-        System.out.println(goodMatches.dump());
-        
-        Mat matchedImage = new Mat(panneauref.rows(), panneauref.cols() * 2, panneauref.type());
+		goodMatches.fromList(listOfGoodMatches);
+		System.out.println(goodMatches.dump());
+
+		Mat matchedImage = new Mat(panneauref.rows(), panneauref.cols() * 2, panneauref.type());
 		Features2d.drawMatches(object, objectKeypoints, panneauref, signKeypoints, goodMatches, matchedImage);
 
-		return goodMatches.size().height;	
-		
+		return goodMatches.size().height;
 
 	}
-/*
-	public static void question_6() {
-		// p33 du diapo open_cv
-		Mat sroadSign = Highgui.imread("ref30.jpg");
+	/*
+	 * public static void question_6() { // p33 du diapo open_cv Mat sroadSign =
+	 * Highgui.imread("ref30.jpg");
+	 * 
+	 * Mat sObject = new Mat();
+	 * 
+	 * Imgproc.resize(sroadSign, sObject, sroadSign.size());
+	 * 
+	 * Mat grayObject = new Mat(sObject.rows(), sObject.cols(), sObject.type());
+	 * Imgproc.cvtColor(sObject, grayObject, Imgproc.COLOR_BGRA2GRAY);
+	 * 
+	 * Core.normalize(grayObject, grayObject, 0, 255, Core.NORM_MINMAX);
+	 * 
+	 * Mat graySign = new Mat(sroadSign.rows(), sroadSign.cols(),
+	 * sroadSign.type()); Imgproc.cvtColor(sroadSign, graySign,
+	 * Imgproc.COLOR_BGRA2GRAY);
+	 * 
+	 * Core.normalize(graySign, graySign, 0, 255, Core.NORM_MINMAX);
+	 * 
+	 * FeatureDetector orbDetector =
+	 * FeatureDetector.create(FeatureDetector.ORB); DescriptorExtractor
+	 * orbExtractor = DescriptorExtractor.create(DescriptorExtractor.ORB);
+	 * 
+	 * MatOfKeyPoint objectKeypoints = new MatOfKeyPoint();
+	 * orbDetector.detect(grayObject, objectKeypoints);
+	 * 
+	 * MatOfKeyPoint signKeypoints = new MatOfKeyPoint();
+	 * orbDetector.detect(graySign, signKeypoints);
+	 * 
+	 * Mat objectDescriptor = new Mat(sObject.rows(), sObject.cols(),
+	 * sObject.type()); orbExtractor.compute(grayObject, objectKeypoints,
+	 * objectDescriptor);
+	 * 
+	 * Mat signDescriptor = new Mat(sroadSign.rows(), sroadSign.cols(),
+	 * sroadSign.type()); orbExtractor.compute(graySign, signKeypoints,
+	 * signDescriptor);
+	 * 
+	 * MatOfDMatch matchs = new MatOfDMatch();
+	 * 
+	 * DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher .
+	 * BRUTEFORCE) matcher .matchCobjectDescriptor, signDescriptor, matchs);
+	 * 
+	 * System. out.println(matchs.dump());
+	 * 
+	 * Mat matchedImage = new Mat(sroadSign.rows(), sroadSign.cols()*2,
+	 * sroadSign.type()) Features2d.drawMatches(sObject, objectKeypoints,
+	 * sroadSign, signKeypoints,
+	 * 
+	 * }
+	 */
 
-		Mat sObject = new Mat();
-
-		Imgproc.resize(sroadSign, sObject, sroadSign.size());
-
-		Mat grayObject = new Mat(sObject.rows(), sObject.cols(), sObject.type());
-		Imgproc.cvtColor(sObject, grayObject, Imgproc.COLOR_BGRA2GRAY);
-
-		Core.normalize(grayObject, grayObject, 0, 255, Core.NORM_MINMAX);
-
-		Mat graySign = new Mat(sroadSign.rows(), sroadSign.cols(), sroadSign.type());
-		Imgproc.cvtColor(sroadSign, graySign, Imgproc.COLOR_BGRA2GRAY);
-
-		Core.normalize(graySign, graySign, 0, 255, Core.NORM_MINMAX);
-
-		FeatureDetector orbDetector = FeatureDetector.create(FeatureDetector.ORB);
-		DescriptorExtractor orbExtractor = DescriptorExtractor.create(DescriptorExtractor.ORB);
-
-		MatOfKeyPoint objectKeypoints = new MatOfKeyPoint();
-		orbDetector.detect(grayObject, objectKeypoints);
-
-		MatOfKeyPoint signKeypoints = new MatOfKeyPoint();
-		orbDetector.detect(graySign, signKeypoints);
-
-		Mat objectDescriptor = new Mat(sObject.rows(), sObject.cols(), sObject.type());
-		orbExtractor.compute(grayObject, objectKeypoints, objectDescriptor);
-
-		Mat signDescriptor = new Mat(sroadSign.rows(), sroadSign.cols(), sroadSign.type());
-		orbExtractor.compute(graySign, signKeypoints, signDescriptor);
-		
-		 * MatOfDMatch matchs = new MatOfDMatch();
-		 * 
-		 * DescriptorMatcher matcher =
-		 * DescriptorMatcher.create(DescriptorMatcher . BRUTEFORCE) matcher
-		 * .matchCobjectDescriptor, signDescriptor, matchs);
-		 * 
-		 * System. out.println(matchs.dump());
-		 * 
-		 * Mat matchedImage = new Mat(sroadSign.rows(), sroadSign.cols()*2,
-		 * sroadSign.type()) Features2d.drawMatches(sObject, objectKeypoints,
-		 * sroadSign, signKeypoints,
-		
-	}
-*/
-	
 	public static void ExtractKeypoint() {
 		Mat sroadSign = Highgui.imread("p10.jpg");
 		Mat sObject = new Mat();
@@ -324,53 +325,80 @@ public class MaBibliothequeTraitementImageEtendue {
 		Mat graySign = new Mat(sroadSign.rows(), sroadSign.cols(), sroadSign.type());
 		Imgproc.cvtColor(sroadSign, graySign, Imgproc.COLOR_BGRA2GRAY);
 		Core.normalize(graySign, graySign, 0, 255, Core.NORM_MINMAX);
-		FeatureDetector orbDetector=FeatureDetector.create(FeatureDetector.ORB);
-		DescriptorExtractor orbExtractor=DescriptorExtractor.create(DescriptorExtractor.ORB);
-		
-		
-		MatOfKeyPoint objectKeypoints=new MatOfKeyPoint();
-		orbDetector.detect(grayObject, objectKeypoints);
-		
-		//System.out.println(objectKeypoints.toList());
-		
-		MatOfKeyPoint signKeypoints=new MatOfKeyPoint();
-		orbDetector.detect(graySign, signKeypoints);
-		
-		
-		System.out.println("*****Matrix of keypoints*************");
-		System.out.println(signKeypoints.toList());
-		
-		
-		Mat objectDescriptor =new Mat(sObject.rows() , sObject.cols() , sObject.type());
-		orbExtractor.compute(grayObject, objectKeypoints, objectDescriptor);
-		
-	
-		Mat signDescriptor =new Mat(sroadSign.rows() , sroadSign.cols() , sroadSign.type());
-		orbExtractor.compute(graySign, signKeypoints, signDescriptor);
-		
-		
-		//Matrice des descripteurs
-		System.out.println("************Matrice des descripteurs******************");
-		System.out.println(signDescriptor.dump());
-	
-	//	System.out.println(signKeypoints.size());
-	//	System.out.println(signDescriptor.size());
-		
+		FeatureDetector orbDetector = FeatureDetector.create(FeatureDetector.ORB);
+		DescriptorExtractor orbExtractor = DescriptorExtractor.create(DescriptorExtractor.ORB);
 
-	
-	
-	/*
-	
-	//Le matching
-	MatOfDMatch matchs = new MatOfDMatch();
-	DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE);
-	matcher.match(objectDescriptor, signDescriptor,matchs);
-	System.out.println(matchs.dump());
-	Mat matchedImage=new Mat(sroadSign.rows(),sroadSign.cols()*2,sroadSign.type());
-	Features2d.drawMatches(sObject, objectKeypoints, sroadSign, signKeypoints, matchs, matchedImage);
-	
-			
-*/
+		MatOfKeyPoint objectKeypoints = new MatOfKeyPoint();
+		orbDetector.detect(grayObject, objectKeypoints);
+
+		// System.out.println(objectKeypoints.toList());
+
+		MatOfKeyPoint signKeypoints = new MatOfKeyPoint();
+		orbDetector.detect(graySign, signKeypoints);
+
+		System.out.println("*****Matrix of keypoints*************");
+		System.out.println(signKeypoints.toList().get(0));
+
+		Mat objectDescriptor = new Mat(sObject.rows(), sObject.cols(), sObject.type());
+		orbExtractor.compute(grayObject, objectKeypoints, objectDescriptor);
+
+		Mat signDescriptor = new Mat(sroadSign.rows(), sroadSign.cols(), sroadSign.type());
+		orbExtractor.compute(graySign, signKeypoints, signDescriptor);
+
+		// Matrice des descripteurs
+		// System.out.println("************Matrice des
+		// descripteurs******************");
+		// System.out.println(signDescriptor.dump());
+
+		// System.out.println(signKeypoints.size());
+		// System.out.println(signDescriptor.size());
+
+		/*
+		 * 
+		 * //Le matching MatOfDMatch matchs = new MatOfDMatch();
+		 * DescriptorMatcher matcher =
+		 * DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE);
+		 * matcher.match(objectDescriptor, signDescriptor,matchs);
+		 * System.out.println(matchs.dump()); Mat matchedImage=new
+		 * Mat(sroadSign.rows(),sroadSign.cols()*2,sroadSign.type());
+		 * Features2d.drawMatches(sObject, objectKeypoints, sroadSign,
+		 * signKeypoints, matchs, matchedImage);
+		 * 
+		 * 
+		 */
 	}
-		
+
+	public static void creerDB() throws SQLException {
+		KeyPoints.createTable();
+		PanneauxRef.createTable();
+		Relation.createTable();
+	}
+
+	public static void remplirDBKeyPoints(String nomPanneau, List<KeyPoint> liste) throws SQLException {
+		PanneauxRef pDB = new PanneauxRef(nomPanneau);
+		pDB.save();
+		Relation rDB;
+		KeyPoints keyPointDB;
+		float x, y, size, angle, response, octave;
+		for (KeyPoint k : liste) {
+			System.out.println(k);
+			x = (float) k.pt.x;
+			y = (float) k.pt.y;
+			size = k.size;
+			angle = k.angle;
+			response = k.response;
+			octave = k.octave;
+			keyPointDB = new KeyPoints(x, y, size, angle, response, octave);
+			keyPointDB.save();
+			rDB = new Relation(pDB.getId(), keyPointDB.getIdKeyPoint());
+		}
+
+	}
+
+	public static void supprimerDB() throws SQLException {
+		Relation.deleteTable();
+		KeyPoints.deleteTable();
+		PanneauxRef.deleteTable();
+	}
+
 }

@@ -13,7 +13,7 @@ import activeRecord.DBConnection;
 /**
  * Classe de test de la classe DBConnection
  * 
- * @author Leo Lemaitre, Remi Besoin
+ * @author Leo Lemaitre
  *
  */
 public class TestDBConnection {
