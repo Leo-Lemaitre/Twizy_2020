@@ -1,4 +1,4 @@
-package src.testEtu;
+package testEtu;
 
 import static org.junit.Assert.*;
 
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import org.junit.Before;
 import org.junit.Test;
 
-import src.activeRecord.DBConnection;
+import activeRecord.DBConnection;
 
 /**
  * Classe de test de la classe DBConnection

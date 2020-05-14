@@ -1,4 +1,4 @@
-package src.testEtu;
+package testEtu;
 
 import static org.junit.Assert.assertEquals;
 
@@ -11,9 +11,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opencv.features2d.KeyPoint;
 
-import src.activeRecord.KeyPoints;
-import src.activeRecord.PanneauxRef;
-import src.activeRecord.Relation;
+import activeRecord.KeyPoints;
+import activeRecord.PanneauxRef;
+import activeRecord.Relation;
 
 /**
  * Tests des differentes methodes de la la classe Keypoints

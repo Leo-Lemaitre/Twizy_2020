@@ -1,4 +1,3 @@
-package InterfaceG;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -13,7 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import src.*;
+
 
 public class Main {
 
@@ -101,17 +100,54 @@ public class Main {
 		frame.setBounds(100, 100, 1252, 724);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		JButton btnNewButton_2_1 = new JButton("->");
+		btnNewButton_2_1.setEnabled(false);
+		btnNewButton_2_1.setFont(new Font("Roboto", Font.PLAIN, 10));
+		btnNewButton_2_1.setBackground(new Color(240, 248, 255));
+		btnNewButton_2_1.setBounds(354, 417, 85, 21);
+		frame.getContentPane().add(btnNewButton_2_1);
+		
+		JButton btnNewButton_2_1_1 = new JButton("<-");
+		btnNewButton_2_1_1.setEnabled(false);
+		btnNewButton_2_1_1.setFont(new Font("Roboto", Font.PLAIN, 10));
+		btnNewButton_2_1_1.setBackground(new Color(240, 248, 255));
+		btnNewButton_2_1_1.setBounds(354, 448, 85, 21);
+		frame.getContentPane().add(btnNewButton_2_1_1);
 		
 		JButton btnNewButton_RUN = new JButton("Run");
 		btnNewButton_RUN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					ArrayList<Integer> indexMax = DetectImage.detect(im.imageOriginale);
+					 
 					if(indexMax.size()==0) {
 						textField.setText("Aucun panneau n'est trouve");
 					}else if(indexMax.size()==1) {
 						addDetectedImageToPanel(panel_1,indexMax.get(0));
 					}else{
-						
+						if(indexMax.size()==2) {
+							btnNewButton_2_1.setEnabled(true);
+							btnNewButton_2_1_1.setEnabled(true);
+							addDetectedImageToPanel(panel_1,indexMax.get(0));
+							btnNewButton_2_1.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									panel_1.removeAll();
+									addDetectedImageToPanel(panel_1,indexMax.get(1));
+									panel_1.updateUI();
+								}
+							});
+							
+							
+							btnNewButton_2_1_1.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									panel_1.removeAll();
+									addDetectedImageToPanel(panel_1,indexMax.get(0));
+									panel_1.updateUI();
+								}
+							});
+							
+						}
 						
 					}
 					System.out.println(indexMax);
@@ -140,19 +176,7 @@ public class Main {
 		btnNewButton_2.setBounds(354, 383, 85, 21);
 		frame.getContentPane().add(btnNewButton_2);
 		
-		JButton btnNewButton_2_1 = new JButton("->");
-		btnNewButton_2_1.setEnabled(false);
-		btnNewButton_2_1.setFont(new Font("Roboto", Font.PLAIN, 10));
-		btnNewButton_2_1.setBackground(new Color(240, 248, 255));
-		btnNewButton_2_1.setBounds(354, 417, 85, 21);
-		frame.getContentPane().add(btnNewButton_2_1);
 		
-		JButton btnNewButton_2_1_1 = new JButton("<-");
-		btnNewButton_2_1_1.setEnabled(false);
-		btnNewButton_2_1_1.setFont(new Font("Roboto", Font.PLAIN, 10));
-		btnNewButton_2_1_1.setBackground(new Color(240, 248, 255));
-		btnNewButton_2_1_1.setBounds(354, 448, 85, 21);
-		frame.getContentPane().add(btnNewButton_2_1_1);
 		
 		JLabel lblNewLabel_1_1 = new JLabel("...");
 		lblNewLabel_1_1.setBounds(449, 382, 144, 21);

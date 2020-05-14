@@ -1,4 +1,4 @@
-package InterfaceG;
+
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -17,9 +17,9 @@ import org.opencv.highgui.Highgui;
 public class ImageLoader {
 	Mat imageOriginale;
 	public ImageLoader(String source) {
-		System.loadLibrary("opencv_java2413"
-				+ "");
+		System.loadLibrary("opencv_java2413");
 		imageOriginale=Highgui.imread(source,Highgui.CV_LOAD_IMAGE_COLOR);
+		System.out.println(imageOriginale);
 	}
 	public void AfficherImage(JPanel panel, String ex) {
 		MatOfByte matOfByte=new MatOfByte();
