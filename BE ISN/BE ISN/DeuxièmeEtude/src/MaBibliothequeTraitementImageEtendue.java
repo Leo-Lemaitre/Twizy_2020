@@ -222,9 +222,8 @@ public class MaBibliothequeTraitementImageEtendue {
 		Imgproc.resize(grayObject, grayObject, graySign.size());
 
 		Core.normalize(graySign, graySign, 0, 255, Core.NORM_MINMAX);
-
-		FeatureDetector orbDetector = FeatureDetector.create(FeatureDetector.ORB);
-		DescriptorExtractor orbExtractor = DescriptorExtractor.create(DescriptorExtractor.ORB);
+		FeatureDetector orbDetector = FeatureDetector.create(FeatureDetector.GRID_MSER);
+		DescriptorExtractor orbExtractor = DescriptorExtractor.create(DescriptorExtractor.SIFT);
 
 		MatOfKeyPoint objectKeypoints = new MatOfKeyPoint();
 		orbDetector.detect(grayObject, objectKeypoints);
