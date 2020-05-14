@@ -1,3 +1,4 @@
+package src;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -35,9 +36,9 @@ import org.opencv.features2d.KeyPoint;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
-import activeRecord.KeyPoints;
-import activeRecord.PanneauxRef;
-import activeRecord.Relation;
+import src.activeRecord.KeyPoints;
+import src.activeRecord.PanneauxRef;
+import src.activeRecord.Relation;
 
 public class MaBibliothequeTraitementImageEtendue {
 	// Contient toutes les méthodes necessaires à la transformation des images
@@ -98,7 +99,7 @@ public class MaBibliothequeTraitementImageEtendue {
 			Scalar color = new Scalar(rand.nextInt(255 - 0 + 1), rand.nextInt(255 - 0 + 1), rand.nextInt(255 - 0 + 1));
 			Imgproc.drawContours(drawing, contours, i, color, 1, 8, hierarchy, 0, new Point());
 		}
-		afficheImage("Contours", drawing);
+	//	afficheImage("Contours", drawing);
 
 		return contours;
 	}
@@ -255,7 +256,7 @@ public class MaBibliothequeTraitementImageEtendue {
 		}
 		MatOfDMatch goodMatches = new MatOfDMatch();
 		goodMatches.fromList(listOfGoodMatches);
-		System.out.println(goodMatches.dump());
+	//	System.out.println(goodMatches.dump());
 
 		Mat matchedImage = new Mat(panneauref.rows(), panneauref.cols() * 2, panneauref.type());
 		Features2d.drawMatches(object, objectKeypoints, panneauref, signKeypoints, goodMatches, matchedImage);

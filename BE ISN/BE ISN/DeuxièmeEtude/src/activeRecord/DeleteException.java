@@ -1,4 +1,4 @@
-package activeRecord;
+package src.activeRecord;
 
 /**
  * Classe qui permet d'instancier des exceptions lorsqu'il y a une exception au

@@ -1,4 +1,4 @@
-package activeRecord;
+package src.activeRecord;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
