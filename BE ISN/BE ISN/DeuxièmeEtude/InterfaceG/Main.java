@@ -9,10 +9,12 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 
@@ -20,7 +22,7 @@ public class Main {
 
 	private JFrame frame;
 	private JFileChooser fichier;
-	private JTextField textField;
+	private JTextArea textArea;
 	private ImageLoader im;
 	ArrayList<Integer> indexMax;
 	private String point;
@@ -82,24 +84,28 @@ public class Main {
 		btnImporterBd.setForeground(Color.BLACK);
 		btnImporterBd.setFont(new Font("Roboto", Font.PLAIN, 10));
 		btnImporterBd.setBackground(SystemColor.activeCaption);
-		btnImporterBd.setBounds(1061, 32, 128, 21);
+	//	btnImporterBd.setBounds(1061, 32, 128, 21);
+		btnImporterBd.setBounds(992, 359, 128, 21);
 		frame.getContentPane().add(btnImporterBd);
 
 		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(878, 58, 311, 260);
+	//	panel_2.setBounds(878, 58, 311, 260);
+		panel_2.setBounds(812, 382, 311, 260);
 		frame.getContentPane().add(panel_2);
 
 		JLabel lblBaseDeDonnees = new JLabel("Base de donnees");
 		lblBaseDeDonnees.setForeground(new Color(255, 255, 204));
 		lblBaseDeDonnees.setFont(new Font("Roboto", Font.PLAIN, 12));
-		lblBaseDeDonnees.setBounds(950, 35, 100, 13);
+	//	lblBaseDeDonnees.setBounds(950, 35, 100, 13)
+		lblBaseDeDonnees.setBounds(812, 359, 100, 13);
 		frame.getContentPane().add(lblBaseDeDonnees);
 
 
-		textField = new JTextField();
-		textField.setBounds(523, 58, 345, 584);
-		frame.getContentPane().add(textField);
-		textField.setColumns(10);
+		textArea = new JTextArea();
+	//	textArea.setBounds(523, 58, 345, 584);
+		textArea.setBounds(523, 58, 600, 291 );
+		frame.getContentPane().add(textArea);
+		textArea.setColumns(10);
 		frame.setBackground(Color.DARK_GRAY);
 		frame.setBounds(100, 100, 1252, 724);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -122,12 +128,8 @@ public class Main {
 		btnNewButton_RUN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				indexMax = src.DetectImage.detect(im.imageOriginale);
-				
-				
-			
-
 				if(indexMax.size()==0) {
-					textField.setText("Aucun panneau n'est trouve");
+					textArea.setText("Aucun panneau n'est trouve");
 				}else if(indexMax.size()==1) {
 					addDetectedImageToPanel(panel_1,indexMax.get(0));
 				}else{
@@ -201,7 +203,8 @@ public class Main {
 		btnStocker.setForeground(Color.BLACK);
 		btnStocker.setFont(new Font("Roboto", Font.PLAIN, 10));
 		btnStocker.setBackground(SystemColor.activeCaption);
-		btnStocker.setBounds(1061, 328, 128, 21);
+		//btnStocker.setBounds(1061, 328, 128, 21);
+		btnStocker.setBounds(1130, 569, 100, 21);
 		frame.getContentPane().add(btnStocker);
 
 		JButton btnNewButton = new JButton("Importer image");
@@ -237,32 +240,38 @@ public class Main {
 
 	}
 	public void addDetectedImageToPanel(JPanel panel_1,int indexmax) {
+		point=src.DetectKeypoints.DetectKeyPoint(im.imageOriginale);
 		switch(indexmax){
 		case -1:;break;
 		case 0:
 			im = new ImageLoader("ref30.jpg");
 			im.AfficherImage(panel_1,".jpg");
-			textField.setText("Panneau 30 détecté");
+			textArea.setText("Panneau 30 détecté"+"\n"+point);
 			break;
 		case 1:
 			im = new ImageLoader("ref50.jpg");
 			im.AfficherImage(panel_1,".jpg");
+			textArea.setText("Panneau 50 détecté"+"\n"+point);
 			break;
 		case 2:
 			im = new ImageLoader("ref70.jpg");
 			im.AfficherImage(panel_1,".jpg");
+			textArea.setText("Panneau 70 détecté"+"\n"+point);
 			break;
 		case 3:
 			im = new ImageLoader("ref90.jpg");
 			im.AfficherImage(panel_1,".jpg");
+			textArea.setText("Panneau 90 détecté"+"\n"+point);
 			break;
 		case 4:
 			im = new ImageLoader("ref110.jpg");
 			im.AfficherImage(panel_1,".jpg");
+			textArea.setText("Panneau 110 détecté"+"\n"+point);
 			break;
 		case 5:
 			im = new ImageLoader("refdouble.jpg");
 			im.AfficherImage(panel_1,".jpg");
+			textArea.setText("Panneau interdiction de dépasser détecté"+"\n"+point);
 			break;
 		}
 	}
