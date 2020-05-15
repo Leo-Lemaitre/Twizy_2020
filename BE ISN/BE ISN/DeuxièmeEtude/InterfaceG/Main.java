@@ -1,3 +1,5 @@
+package InterfaceG;
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -21,6 +23,7 @@ public class Main {
 	private JTextField textField;
 	private ImageLoader im;
 	ArrayList<Integer> indexMax;
+	private String point;
 	/**
 	 * Launch the application.
 	 */
@@ -118,7 +121,10 @@ public class Main {
 		JButton btnNewButton_RUN = new JButton("Run");
 		btnNewButton_RUN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				indexMax = DetectImage.detect(im.imageOriginale);
+				indexMax = src.DetectImage.detect(im.imageOriginale);
+				
+				
+			
 
 				if(indexMax.size()==0) {
 					textField.setText("Aucun panneau n'est trouve");
@@ -137,6 +143,7 @@ public class Main {
 								panel_1.updateUI();
 							}
 						});
+						
 
 
 						btnNewButton_2_1_1.addActionListener(new ActionListener() {
@@ -235,6 +242,7 @@ public class Main {
 		case 0:
 			im = new ImageLoader("ref30.jpg");
 			im.AfficherImage(panel_1,".jpg");
+			textField.setText("Panneau 30 détecté");
 			break;
 		case 1:
 			im = new ImageLoader("ref50.jpg");
