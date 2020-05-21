@@ -11,9 +11,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opencv.features2d.KeyPoint;
 
-import activeRecord.KeyPoints;
-import activeRecord.PanneauxRef;
-import activeRecord.Relation;
+import src.activeRecord.KeyPoints;
+import src.activeRecord.PanneauxRef;
+import src.activeRecord.Relation;
 
 /**
  * Tests des differentes methodes de la la classe Keypoints
