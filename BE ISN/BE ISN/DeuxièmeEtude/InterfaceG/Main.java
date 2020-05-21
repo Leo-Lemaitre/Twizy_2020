@@ -19,7 +19,7 @@ import javax.swing.JTextField;
 
 import org.opencv.core.Mat;
 
-import src.*;
+import TraitementImage.*;
 
 public class Main {
 
@@ -71,10 +71,10 @@ public class Main {
 
 		frame.setResizable(false);
 
-		JLabel lblNewLabel = new JLabel("Source");
+		JLabel lblNewLabel = new JLabel("Traitement d'image");
 		lblNewLabel.setForeground(new Color(255, 255, 204));
 		lblNewLabel.setFont(new Font("Roboto", Font.PLAIN, 12));
-		lblNewLabel.setBounds(33, 35, 77, 13);
+		lblNewLabel.setBounds(33, 35, 170, 13);
 		frame.getContentPane().add(lblNewLabel);
 
 		JLabel lblResultat = new JLabel("Resultat");
@@ -83,30 +83,17 @@ public class Main {
 		lblResultat.setBounds(33, 359, 77, 13);
 		frame.getContentPane().add(lblResultat);
 
-		JButton btnImporterBd = new JButton("Importer BD");
-		btnImporterBd.setForeground(Color.BLACK);
-		btnImporterBd.setFont(new Font("Roboto", Font.PLAIN, 10));
-		btnImporterBd.setBackground(SystemColor.activeCaption);
-	//	btnImporterBd.setBounds(1061, 32, 128, 21);
-		btnImporterBd.setBounds(992, 359, 128, 21);
-		frame.getContentPane().add(btnImporterBd);
-
-		JPanel panel_2 = new JPanel();
-	//	panel_2.setBounds(878, 58, 311, 260);
-		panel_2.setBounds(812, 382, 311, 260);
-		frame.getContentPane().add(panel_2);
-
-		JLabel lblBaseDeDonnees = new JLabel("Base de donnees");
+		JLabel lblBaseDeDonnees = new JLabel("Console");
 		lblBaseDeDonnees.setForeground(new Color(255, 255, 204));
 		lblBaseDeDonnees.setFont(new Font("Roboto", Font.PLAIN, 12));
 	//	lblBaseDeDonnees.setBounds(950, 35, 100, 13)
-		lblBaseDeDonnees.setBounds(812, 359, 100, 13);
+		lblBaseDeDonnees.setBounds(534, 549, 100, 13);
 		frame.getContentPane().add(lblBaseDeDonnees);
 
 
 		textArea = new JTextArea();
 	//	textArea.setBounds(523, 58, 345, 584);
-		textArea.setBounds(523, 58, 600, 291 );
+		textArea.setBounds(520, 572, 676, 70 );
 		frame.getContentPane().add(textArea);
 		textArea.setColumns(10);
 		frame.setBackground(Color.DARK_GRAY);
@@ -201,16 +188,8 @@ public class Main {
 		btnImporterVideo.setForeground(Color.BLACK);
 		btnImporterVideo.setFont(new Font("Roboto", Font.PLAIN, 10));
 		btnImporterVideo.setBackground(SystemColor.activeCaption);
-		btnImporterVideo.setBounds(360, 32, 151, 21);
+		btnImporterVideo.setBounds(1001, 32, 151, 21);
 		frame.getContentPane().add(btnImporterVideo);
-
-		JButton btnStocker = new JButton("Exporter");
-		btnStocker.setForeground(Color.BLACK);
-		btnStocker.setFont(new Font("Roboto", Font.PLAIN, 10));
-		btnStocker.setBackground(SystemColor.activeCaption);
-		//btnStocker.setBounds(1061, 328, 128, 21);
-		btnStocker.setBounds(1130, 569, 100, 21);
-		frame.getContentPane().add(btnStocker);
 
 		JButton btnNewButton = new JButton("Importer image");
 		btnNewButton.setFont(new Font("Roboto", Font.PLAIN, 10));
@@ -239,13 +218,35 @@ public class Main {
 				}
 			}
 		});
-		btnNewButton.setBounds(194, 32, 151, 21);
+		btnNewButton.setBounds(360, 32, 151, 21);
 		frame.getContentPane().add(btnNewButton);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBounds(568, 58, 584, 400);
+		frame.getContentPane().add(panel_2);
+		
+		JLabel lblTraitementFluxVideo = new JLabel("Traitement flux video");
+		lblTraitementFluxVideo.setForeground(new Color(255, 255, 204));
+		lblTraitementFluxVideo.setFont(new Font("Roboto", Font.PLAIN, 12));
+		lblTraitementFluxVideo.setBounds(571, 36, 170, 13);
+		frame.getContentPane().add(lblTraitementFluxVideo);
+		
+		JButton btnNewButton_RUN_1 = new JButton("Run");
+		btnNewButton_RUN_1.setForeground(Color.BLACK);
+		btnNewButton_RUN_1.setFont(new Font("Roboto", Font.PLAIN, 9));
+		btnNewButton_RUN_1.setEnabled(false);
+		btnNewButton_RUN_1.setBackground(new Color(51, 255, 153));
+		btnNewButton_RUN_1.setBounds(1067, 468, 85, 21);
+		frame.getContentPane().add(btnNewButton_RUN_1);
+		
+		JLabel videoName = new JLabel("...");
+		videoName.setBounds(578, 468, 144, 21);
+		frame.getContentPane().add(videoName);
 
 
 	}
 	public void addDetectedImageToPanel(JPanel panel_1,int indexmax) {
-		point=src.DetectKeypoints.DetectKeyPoint(im.imageOriginale);
+		point=TraitementImage.DetectKeypoints.DetectKeyPoint(im.imageOriginale);
 		switch(indexmax){
 		case -1:;break;
 		case 0:

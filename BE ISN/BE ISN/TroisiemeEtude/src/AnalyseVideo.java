@@ -46,7 +46,7 @@ public class AnalyseVideo {
 		while (camera.read(frame)) {
 	
 			//A completer
-			ImageIcon image = new ImageIcon(Mat2BufferedImage(frame));
+			ImageIcon image = new ImageIcon(Mat2bufferedImage(frame));
 			vidpanel.setIcon(image);
 			vidpanel.repaint();
 		}
@@ -67,21 +67,6 @@ public class AnalyseVideo {
 			e.printStackTrace();
 		}
 		return img;
-	}
-
-	public static BufferedImage Mat2BufferedImage(Mat m) {
-		//Method converts a Mat to a Buffered Image
-		int type = BufferedImage.TYPE_BYTE_GRAY;
-		if ( m.channels() > 1 ) {
-			type = BufferedImage.TYPE_3BYTE_BGR;
-		}
-		int bufferSize = m.channels()*m.cols()*m.rows();
-		byte [] b = new byte[bufferSize];
-		m.get(0,0,b); // get all the pixels
-		BufferedImage image = new BufferedImage(m.cols(),m.rows(), type);
-		final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-		System.arraycopy(b, 0, targetPixels, 0, b.length);  
-		return image;
 	}
 
 	public static int identifiepanneau(Mat objetrond){
