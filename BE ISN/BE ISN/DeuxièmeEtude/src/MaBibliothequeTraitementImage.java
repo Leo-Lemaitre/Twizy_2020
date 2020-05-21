@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+
 import org.opencv.core.MatOfByte;
 import org.opencv.core.Scalar;
 import org.opencv.highgui.Highgui;

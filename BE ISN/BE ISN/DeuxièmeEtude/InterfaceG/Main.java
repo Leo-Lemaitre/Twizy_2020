@@ -17,6 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.opencv.core.Mat;
+
+import src.*;
 
 public class Main {
 
@@ -127,7 +130,9 @@ public class Main {
 		JButton btnNewButton_RUN = new JButton("Run");
 		btnNewButton_RUN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				indexMax = src.DetectImage.detect(im.imageOriginale);
+				Mat m = im.imageOriginale;
+				indexMax = DetectImage.detect(m);
+				
 				if(indexMax.size()==0) {
 					textArea.setText("Aucun panneau n'est trouve");
 				}else if(indexMax.size()==1) {

@@ -41,4 +41,7 @@ public class ImageLoader {
 			e.printStackTrace();
 		}
 	}
+	public Mat getImage() {
+		return imageOriginale;
+	}
 }
