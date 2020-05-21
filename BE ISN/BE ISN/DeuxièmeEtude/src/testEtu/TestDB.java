@@ -1,4 +1,4 @@
-package src.testEtu;
+package testEtu;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,14 +28,14 @@ public class TestDB {
 	/**
 	 * liste de Keypointss
 	 */
-	ArrayList<src.activeRecord.KeyPoints> listeKeypoints;
+	ArrayList<KeyPoints> listeKeypoints;
 
-	ArrayList<src.activeRecord.Relation> listeRelations;
+	ArrayList<Relation> listeRelations;
 
 	/**
 	 * liste de PanneauxRef
 	 */
-	ArrayList<src.activeRecord.PanneauxRef> listPanneauxRef;
+	ArrayList<PanneauxRef> listPanneauxRef;
 
 	/**
 	 * objet permettant de se connecter a la base de donnees
@@ -45,14 +45,14 @@ public class TestDB {
 	/**
 	 * les differents realisateurs
 	 */
-	src.activeRecord.PanneauxRef p1, p2, p3;
+	PanneauxRef p1, p2, p3;
 
 	/**
 	 * les differents Keypointss
 	 */
-	src.activeRecord.KeyPoints f1, f2, f3, f4, f5;
+	KeyPoints f1, f2, f3, f4, f5;
 
-	src.activeRecord.Relation r1, r2, r3;
+	Relation r1, r2, r3;
 
 	/**
 	 * Ce qui sera execute avant chaques tests, cela initialisera les tables
@@ -66,15 +66,15 @@ public class TestDB {
 	@Before
 	public void avant() throws SQLException {
 
-		src.activeRecord.KeyPoints.createTable();
-		src.activeRecord.PanneauxRef.createTable();
-		src.activeRecord.Relation.createTable();
+		KeyPoints.createTable();
+		PanneauxRef.createTable();
+		Relation.createTable();
 
-		p1 = new src.activeRecord.PanneauxRef("110");
+		p1 = new PanneauxRef("110");
 		p1.save();
-		p2 = new src.activeRecord.PanneauxRef("30");
+		p2 = new PanneauxRef("30");
 		p2.save();
-		listPanneauxRef = (ArrayList<src.activeRecord.PanneauxRef>) src.activeRecord.PanneauxRef.findAll();
+		listPanneauxRef = (ArrayList<PanneauxRef>) PanneauxRef.findAll();
 		float x, y, size, angle, response, octave;
 		x = (float) 607.0;
 		y = (float) 524.0;
@@ -83,13 +83,13 @@ public class TestDB {
 		response = (float) 0.09898;
 		octave = (float) 0.0454;
 		
-		f1 = new src.activeRecord.KeyPoints(x, y, size, angle, response, octave);
+		f1 = new KeyPoints(x, y, size, angle, response, octave);
 		f1.save();
 		/*
 		 * f2 = new KeyPoints(510); f2.save(); f3=new KeyPoints(1000);
 		 * f3.save();
 		 */
-		listeKeypoints = (ArrayList<src.activeRecord.KeyPoints>) src.activeRecord.KeyPoints.findAll();
+		listeKeypoints = (ArrayList<KeyPoints>) KeyPoints.findAll();
 		/*
 		 * r1=new Relation(p1.getId(), f1.getIdKeyPoint()); r1.save(); r2=new
 		 * Relation(p2.getId(), f2.getIdKeyPoint()); r2.save(); r3=new
@@ -110,10 +110,10 @@ public class TestDB {
 
 	@After
 	public void apres() throws SQLException {
-		src.activeRecord.Relation.deleteTable();
+		Relation.deleteTable();
 
-		src.activeRecord.KeyPoints.deleteTable();
-		src.activeRecord.PanneauxRef.deleteTable();
+		KeyPoints.deleteTable();
+		PanneauxRef.deleteTable();
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class TestDB {
 	 */
 	@Test
 	public void test_findAll_nombreKeypoints() throws SQLException {
-		src.activeRecord.KeyPoints keyPointDB = listeKeypoints.get(0);
+		KeyPoints keyPointDB = listeKeypoints.get(0);
 		KeyPoint test = new KeyPoint(keyPointDB.getX(), keyPointDB.getY(), keyPointDB.getSize(), keyPointDB.getAngle(),
 				keyPointDB.getResponse());
 		System.out.println(test);

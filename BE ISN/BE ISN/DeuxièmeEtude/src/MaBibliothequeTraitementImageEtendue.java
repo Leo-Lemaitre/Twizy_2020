@@ -1,4 +1,3 @@
-package src;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -37,9 +36,9 @@ import org.opencv.features2d.KeyPoint;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
-import src.activeRecord.KeyPoints;
-import src.activeRecord.PanneauxRef;
-import src.activeRecord.Relation;
+import activeRecord.KeyPoints;
+import activeRecord.PanneauxRef;
+import activeRecord.Relation;
 
 public class MaBibliothequeTraitementImageEtendue {
 	// Contient toutes les méthodes necessaires à la transformation des images
