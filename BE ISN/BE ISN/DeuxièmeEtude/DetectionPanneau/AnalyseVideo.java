@@ -21,21 +21,23 @@ import TraitementImage.*;
 
 
 public class AnalyseVideo {
+	
 	static ArrayList<Integer> indexMax;
 	static {
 		try {
-		    System.load("C:/opencv/build/x64/vc14/bin/opencv_ffmpeg2413_64.dll");
-		    } catch (UnsatisfiedLinkError e) {
-		        System.err.println("Native code library failed to load.\n" + e);
-		        System.exit(1);
-		    }
+			System.load("C:/opencv/build/x64/vc14/bin/opencv_ffmpeg2413_64.dll");
+		} catch (UnsatisfiedLinkError e) {
+			System.err.println("Native code library failed to load.\n" + e);
+			System.exit(1);
+		}
 	}
 
 	static Mat imag = null;
 
 	public static void main(String[] args) {
+		int fr = 0;
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		
+
 		JFrame jframe = new JFrame("Detection de panneaux sur un flux vidéo");
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JLabel vidpanel = new JLabel();
@@ -44,27 +46,30 @@ public class AnalyseVideo {
 		jframe.setVisible(true);
 
 		Mat frame = new Mat();
-		VideoCapture camera = new VideoCapture("video1.avi");
+		VideoCapture camera = new VideoCapture("C:\\Users\\Yahya\\OneDrive\\Documents\\video1.avi");
 		Mat PanneauAAnalyser = null;
-		camera.read(frame);
+		//camera.read(frame);
 
 		while (camera.read(frame)) {
-	
-			indexMax = DetectImage.detect(frame);
 			ImageIcon image = new ImageIcon(Mat2bufferedImage(frame));
 			vidpanel.setIcon(image);
 			vidpanel.repaint();
-			if(indexMax.size()==0) {
-				System.out.println("Aucun panneau n'est trouve");
-			}else {
-				for(int i=0;i<indexMax.size();i++) {
-					switch(indexMax.get(i)){
+			fr++;
+			if(fr >50) {	
+				indexMax = DetectImage.detect(frame);
+				if(indexMax.size()==0) {
+				//	System.out.println("Aucun panneau n'est trouve");
+				}else {
+					fr = 0;
+					for(int i=0;i<indexMax.size();i++) {
+						switch(indexMax.get(i)){
 						case 0:System.out.println("Panneau 30 détécté");break;
 						case 1:System.out.println("Panneau 50 détécté");break;
 						case 2:System.out.println("Panneau 70 détécté");break;
 						case 3:System.out.println("Panneau 90 détécté");break;
 						case 4:System.out.println("Panneau 110 détécté");break;
 						case 5:System.out.println("Panneau interdiction de dépasser détécté");break;
+						}
 					}
 				}
 			}

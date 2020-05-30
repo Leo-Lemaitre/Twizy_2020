@@ -34,7 +34,7 @@ public class DetectImage {
 				//
 				Mat satureerond=MaBibliothequeTraitementImage.seuillage(transformeerond, 115, 239, 110);
 
-				MaBibliothequeTraitementImageEtendue.ExtractKeypoint();
+			//	MaBibliothequeTraitementImageEtendue.ExtractKeypoint();
 		    //	List<MatOfPoint> ListeContoursrond= MaBibliothequeTraitementImageEtendue .ExtractContours(satureerond);
 			//	List<Point> objetronddescriptor= MaBibliothequeTraitementImageEtendue.ExtractDesciptor(satureerond2);
 		    	//*************

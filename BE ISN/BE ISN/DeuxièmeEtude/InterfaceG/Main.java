@@ -6,8 +6,14 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
@@ -17,7 +23,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
+import org.opencv.highgui.Highgui;
+import org.opencv.highgui.VideoCapture;
 
 import TraitementImage.*;
 
@@ -29,10 +39,22 @@ public class Main {
 	private ImageLoader im;
 	ArrayList<Integer> indexMax;
 	private String point;
+	private VideoCapture camera;
+	static {
+		try {
+		    System.load("C:/opencv/build/x64/vc14/bin/opencv_ffmpeg2413_64.dll");
+		    } catch (UnsatisfiedLinkError e) {
+		        System.err.println("Native code library failed to load.\n" + e);
+		        System.exit(1);
+		    }
+	}
+
+	static Mat imag = null;
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -62,11 +84,11 @@ public class Main {
 		frame.getContentPane().setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(33, 58, 478, 291);
+		panel.setBounds(33, 58, 648, 459);
 		frame.getContentPane().add(panel);
 
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(34, 382, 311, 260);
+		panel_1.setBounds(727, 93, 469, 381);
 		frame.getContentPane().add(panel_1);
 
 		frame.setResizable(false);
@@ -80,20 +102,21 @@ public class Main {
 		JLabel lblResultat = new JLabel("Resultat");
 		lblResultat.setForeground(new Color(255, 255, 204));
 		lblResultat.setFont(new Font("Roboto", Font.PLAIN, 12));
-		lblResultat.setBounds(33, 359, 77, 13);
+		lblResultat.setBounds(727, 58, 77, 13);
 		frame.getContentPane().add(lblResultat);
 
 		JLabel lblBaseDeDonnees = new JLabel("Console");
 		lblBaseDeDonnees.setForeground(new Color(255, 255, 204));
 		lblBaseDeDonnees.setFont(new Font("Roboto", Font.PLAIN, 12));
 	//	lblBaseDeDonnees.setBounds(950, 35, 100, 13)
-		lblBaseDeDonnees.setBounds(534, 549, 100, 13);
+		lblBaseDeDonnees.setBounds(33, 549, 100, 13);
 		frame.getContentPane().add(lblBaseDeDonnees);
+		
 
 
 		textArea = new JTextArea();
 	//	textArea.setBounds(523, 58, 345, 584);
-		textArea.setBounds(520, 572, 676, 70 );
+		textArea.setBounds(33, 572, 1163, 70 );
 		frame.getContentPane().add(textArea);
 		textArea.setColumns(10);
 		frame.setBackground(Color.DARK_GRAY);
@@ -104,14 +127,14 @@ public class Main {
 		btnNewButton_2_1.setEnabled(false);
 		btnNewButton_2_1.setFont(new Font("Roboto", Font.PLAIN, 10));
 		btnNewButton_2_1.setBackground(new Color(240, 248, 255));
-		btnNewButton_2_1.setBounds(354, 417, 85, 21);
+		btnNewButton_2_1.setBounds(972, 484, 85, 21);
 		frame.getContentPane().add(btnNewButton_2_1);
 
 		JButton btnNewButton_2_1_1 = new JButton("<-");
 		btnNewButton_2_1_1.setEnabled(false);
 		btnNewButton_2_1_1.setFont(new Font("Roboto", Font.PLAIN, 10));
 		btnNewButton_2_1_1.setBackground(new Color(240, 248, 255));
-		btnNewButton_2_1_1.setBounds(354, 448, 85, 21);
+		btnNewButton_2_1_1.setBounds(855, 484, 85, 21);
 		frame.getContentPane().add(btnNewButton_2_1_1);
 
 		JButton btnNewButton_RUN = new JButton("Run");
@@ -159,12 +182,8 @@ public class Main {
 		btnNewButton_RUN.setFont(new Font("Roboto", Font.PLAIN, 9));
 		btnNewButton_RUN.setForeground(new Color(0, 0, 0));
 		btnNewButton_RUN.setBackground(new Color(51, 255, 153));
-		btnNewButton_RUN.setBounds(354, 569, 85, 21);
+		btnNewButton_RUN.setBounds(1111, 547, 85, 21);
 		frame.getContentPane().add(btnNewButton_RUN);
-
-		JLabel lblNewLabel_1 = new JLabel("...");
-		lblNewLabel_1.setBounds(449, 568, 144, 21);
-		frame.getContentPane().add(lblNewLabel_1);
 
 		JButton btnNewButton_2 = new JButton("Afficher");
 		btnNewButton_2.setEnabled(false);
@@ -175,21 +194,8 @@ public class Main {
 
 			}
 		});
-		btnNewButton_2.setBounds(354, 383, 85, 21);
+		btnNewButton_2.setBounds(1016, 546, 85, 21);
 		frame.getContentPane().add(btnNewButton_2);
-
-
-
-		JLabel lblNewLabel_1_1 = new JLabel("...");
-		lblNewLabel_1_1.setBounds(449, 382, 144, 21);
-		frame.getContentPane().add(lblNewLabel_1_1);
-
-		JButton btnImporterVideo = new JButton("Importer video");
-		btnImporterVideo.setForeground(Color.BLACK);
-		btnImporterVideo.setFont(new Font("Roboto", Font.PLAIN, 10));
-		btnImporterVideo.setBackground(SystemColor.activeCaption);
-		btnImporterVideo.setBounds(1001, 32, 151, 21);
-		frame.getContentPane().add(btnImporterVideo);
 
 		JButton btnNewButton = new JButton("Importer image");
 		btnNewButton.setFont(new Font("Roboto", Font.PLAIN, 10));
@@ -221,29 +227,7 @@ public class Main {
 		btnNewButton.setBounds(360, 32, 151, 21);
 		frame.getContentPane().add(btnNewButton);
 		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(568, 58, 584, 400);
-		frame.getContentPane().add(panel_2);
 		
-		JLabel lblTraitementFluxVideo = new JLabel("Traitement flux video");
-		lblTraitementFluxVideo.setForeground(new Color(255, 255, 204));
-		lblTraitementFluxVideo.setFont(new Font("Roboto", Font.PLAIN, 12));
-		lblTraitementFluxVideo.setBounds(571, 36, 170, 13);
-		frame.getContentPane().add(lblTraitementFluxVideo);
-		
-		JButton btnNewButton_RUN_1 = new JButton("Run");
-		btnNewButton_RUN_1.setForeground(Color.BLACK);
-		btnNewButton_RUN_1.setFont(new Font("Roboto", Font.PLAIN, 9));
-		btnNewButton_RUN_1.setEnabled(false);
-		btnNewButton_RUN_1.setBackground(new Color(51, 255, 153));
-		btnNewButton_RUN_1.setBounds(1067, 468, 85, 21);
-		frame.getContentPane().add(btnNewButton_RUN_1);
-		
-		JLabel videoName = new JLabel("...");
-		videoName.setBounds(578, 468, 144, 21);
-		frame.getContentPane().add(videoName);
-
-
 	}
 	public void addDetectedImageToPanel(JPanel panel_1,int indexmax) {
 		point=TraitementImage.DetectKeypoints.DetectKeyPoint(im.imageOriginale);
@@ -281,4 +265,21 @@ public class Main {
 			break;
 		}
 	}
+	
+
+	public static BufferedImage Mat2bufferedImage(Mat image) {
+		MatOfByte bytemat = new MatOfByte();
+		Highgui.imencode(".jpg", image, bytemat);
+		byte[] bytes = bytemat.toArray();
+		InputStream in = new ByteArrayInputStream(bytes);
+		BufferedImage img = null;
+		try {
+			img = ImageIO.read(in);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return img;
+	}
+
 }

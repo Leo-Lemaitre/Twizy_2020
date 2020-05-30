@@ -337,8 +337,8 @@ public class MaBibliothequeTraitementImageEtendue {
 		MatOfKeyPoint signKeypoints = new MatOfKeyPoint();
 		orbDetector.detect(graySign, signKeypoints);
 
-		System.out.println("*****Matrix of keypoints*************");
-		System.out.println(signKeypoints.toList().get(0));
+	/*	System.out.println("*****Matrix of keypoints*************");
+		System.out.println(signKeypoints.toList().get(0));*/
 
 		Mat objectDescriptor = new Mat(sObject.rows(), sObject.cols(), sObject.type());
 		orbExtractor.compute(grayObject, objectKeypoints, objectDescriptor);
